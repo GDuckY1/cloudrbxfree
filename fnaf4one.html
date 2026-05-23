@@ -1,66 +1,323 @@
- <!DOCTYPE html>
-
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Google Docs - Shared Project Notes</title> <!-- Decoy Title -->
-
+    <title>GDuckY Cloud Gaming</title>
     <style>
+        :root {
+            --bg-dark: #0f111a;
+            --card-dark: #1a1d2e;
+            --accent-ducky: #ccff00;
+            --text-main: #ffffff;
+            --text-muted: #8b949e;
+            --border-color: #2f364d;
+        }
 
-        body, html {
-
+        * {
+            box-sizing: border-box;
             margin: 0;
-
             padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
             width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 20px;
+        }
 
-            height: 100%;
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--accent-ducky);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
 
+        .stats-badge {
+            background-color: var(--card-dark);
+            border: 1px solid var(--accent-ducky);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 992px) {
+            .main-container {
+                grid-template-columns: 3fr 1fr;
+            }
+        }
+
+        .panel {
+            background-color: var(--card-dark);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Upgraded Stream Panel Height */
+        .stream-viewport {
+            width: 100%;
+            height: 650px; 
+            background-color: #05070f;
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
             overflow: hidden;
-
-            background-color: #000000;
-
         }
 
-        iframe {
-
-            width: 100%;
-
-            height: 100%;
-
+        .btn-launch {
+            background-color: var(--accent-ducky);
+            color: #000;
             border: none;
-
-            background: transparent;
-
+            padding: 14px 28px;
+            font-weight: 700;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: transform 0.2s, background-color 0.2s;
+            z-index: 10;
         }
 
+        .btn-launch:hover {
+            transform: scale(1.05);
+            background-color: #b8e600;
+        }
+
+        .stream-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: none;
+        }
+
+        /* Chat Panel */
+        .chat-container {
+            height: 530px; 
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            background-color: #121422;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .message.friend {
+            background-color: var(--border-color);
+            align-self: flex-start;
+            color: var(--text-main);
+        }
+
+        .message.user {
+            background-color: var(--accent-ducky);
+            color: #000;
+            align-self: flex-end;
+            font-weight: 500;
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            background-color: #121422;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px;
+            color: white;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: var(--accent-ducky);
+        }
+
+        .btn-send {
+            background-color: var(--border-color);
+            color: white;
+            border: none;
+            padding: 0 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-send:hover {
+            background-color: #3f4969;
+        }
+
+        .fallback-text {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            padding: 15px;
+            display: none;
+            z-index: 5;
+        }
+
+        .fallback-link {
+            color: var(--accent-ducky);
+            text-decoration: underline;
+            cursor: pointer;
+        }
     </style>
-
 </head>
-
 <body>
 
+    <header>
+        <div class="logo">🦆 GDuckY Cloud</div>
+        <div class="stats-badge" id="storage-tracker">Storage Saved: 3.5 GB</div>
+    </header>
 
+    <div class="main-container">
+        <!-- Left Side: Expanded Cloud Display -->
+        <div class="panel">
+            <div class="panel-title">📡 Unblocked Roblox Cloud Stream</div>
+            <div class="stream-viewport" id="viewport">
+                <button class="btn-launch" id="launch-btn" onclick="startCloudStream()">Connect to CloudMoon</button>
+                <div class="fallback-text" id="fallback-notice">
+                    If CloudMoon blocks framing on your network, use the 
+                    <span class="fallback-link" onclick="openDirectWindow()">Google Translate Unblock Link directly</span> to bypass the firewall.
+                </div>
+                <iframe class="stream-frame" id="stream-target" src=""></iframe>
+            </div>
+        </div>
 
-    <!-- This securely locks the working cloud client into an isolated frame -->
+        <!-- Right Side: Matched Height Chat Interface -->
+        <div class="panel">
+            <div class="panel-title">💬 Peer Pressure Log</div>
+            <div class="chat-container" id="chat-box">
+                <div class="message friend">Yo why aren't you on Roblox?? Hop on right now</div>
+                <div class="message friend">Don't tell me you don't have storage space, just delete something lol</div>
+            </div>
+            <div class="chat-input-row">
+                <input type="text" class="chat-input" id="user-msg" placeholder="Type a reply to your friend..." onkeypress="handleKeyPress(event)">
+                <button class="btn-send" onclick="sendCustomMessage()">Send</button>
+            </div>
+        </div>
+    </div>
 
-    <iframe 
+    <script>
+        const targetCloudUrl = "https://web.cloudmoonapp.com/";
+        const secureProxyMirror = "https://translate.google.com/translate?sl=en&tl=es&u=" + encodeURIComponent(targetCloudUrl);
+        let storageSaved = 3.5;
 
-        src="https://web.cloudmoonapp.com/game/com.roblox.client/" 
+        function startCloudStream() {
+            const btn = document.getElementById('launch-btn');
+            const frame = document.getElementById('stream-target');
+            const fallback = document.getElementById('fallback-notice');
+            
+            btn.innerText = "Routing through proxy...";
+            btn.style.opacity = "0.7";
+            
+            setTimeout(() => {
+                btn.style.display = "none";
+                fallback.style.display = "block";
+                frame.style.display = "block";
+                frame.src = targetCloudUrl; 
+            }, 1200);
+        }
 
-        allow="gamepad; autoplay; fullscreen; clipboard-read; clipboard-write;">
+        function openDirectWindow() {
+            window.open(secureProxyMirror, '_blank');
+        }
 
-    </iframe>
+        function sendCustomMessage() {
+            const input = document.getElementById('user-msg');
+            const chatBox = document.getElementById('chat-box');
+            const tracker = document.getElementById('storage-tracker');
+            const messageText = input.value.trim();
 
+            if (messageText === "") return;
 
+            const userDiv = document.createElement('div');
+            userDiv.className = "message user";
+            userDiv.innerText = messageText;
+            chatBox.appendChild(userDiv);
+            
+            input.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
 
+            storageSaved += 0.4;
+            tracker.innerText = "Storage Saved: " + storageSaved.toFixed(1) + " GB";
+            tracker.style.transform = "scale(1.1)";
+            setTimeout(() => tracker.style.transform = "scale(1)", 300);
+
+            setTimeout(() => {
+                const friendDiv = document.createElement('div');
+                friendDiv.className = "message friend";
+                
+                if(messageText.toLowerCase().includes('ducky') || messageText.toLowerCase().includes('cloud')) {
+                    friendDiv.innerText = "Wait, what is GDuckY? How are you running it without a download?";
+                } else {
+                    friendDiv.innerText = "Stop making excuses and just accept my invite already!";
+                }
+                
+                chatBox.appendChild(friendDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 1200);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendCustomMessage();
+            }
+        }
+    </script>
 </body>
-
-</html> 
-
+</html>
