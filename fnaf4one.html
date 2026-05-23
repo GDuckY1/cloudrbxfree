@@ -1,91 +1,66 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Docs - Shared Project Notes</title> <style>
+
+    <title>Google Docs - Shared Project Notes</title> <!-- Decoy Title -->
+
+    <style>
+
         body, html {
+
             margin: 0;
+
             padding: 0;
+
             width: 100%;
+
             height: 100%;
+
             overflow: hidden;
+
             background-color: #000000;
-            font-family: Arial, sans-serif;
+
         }
+
         iframe {
+
             width: 100%;
+
             height: 100%;
+
             border: none;
+
             background: transparent;
-            display: none; /* Hidden until user interacts */
+
         }
-        /* Overlay to bypass browser autoplay blocks */
-        #start-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #050505;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            flex-direction: column;
-        }
-        #start-btn {
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #ff0000;
-            background: #111;
-            border: 2px solid #333;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
-        }
-        #start-btn:hover {
-            background: #222;
-            border-color: #ff0000;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
-        }
+
     </style>
+
 </head>
+
 <body>
 
-    <div id="start-overlay">
-        <button id="start-btn" onclick="startCloudGaming()">Launch Cloud Client</button>
-    </div>
 
-    <audio id="fnaf-music" loop>
-        <source src="YOUR_DIRECT_AUDIO_LINK_HERE.mp3" type="audio/mpeg">
-    </audio>
+
+    <!-- This securely locks the working cloud client into an isolated frame -->
 
     <iframe 
-        id="game-frame"
+
         src="https://web.cloudmoonapp.com/game/com.roblox.client/" 
+
         allow="gamepad; autoplay; fullscreen; clipboard-read; clipboard-write;">
+
     </iframe>
 
-    <script>
-        function startCloudGaming() {
-            var audio = document.getElementById("fnaf-music");
-            var iframe = document.getElementById("game-frame");
-            var overlay = document.getElementById("start-overlay");
 
-            // 1. Play the music
-            audio.play().catch(function(error) {
-                console.log("Audio playback failed:", error);
-            });
 
-            // 2. Reveal the game frame
-            iframe.style.display = "block";
-
-            // 3. Remove the overlay smoothly
-            overlay.style.display = "none";
-        }
-    </script>
 </body>
-</html>
+
+</html> 
+
